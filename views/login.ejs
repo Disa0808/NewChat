@@ -1,0 +1,52 @@
+<% layout('./layout/page') -%>
+
+<% block('title', 'Login page') -%>
+
+<div class="container">
+    <form class="form-horizontal login-form" name="login-form">
+        <div class="form-group">
+            <label for="input-username" class="col-lg-2 control-label">Имя</label>
+            <div class="col-lg-10">
+                <input type="text" name="username" id="input-username" value="name" class="form-control" placeholder="Имя">
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="input-password" class="col-lg-2 control-label">Имя</label>
+                <div class="col-lg-10">
+                    <input type="text" name="password" id="input-password" value="password" class="form-control" placeholder="Пароль">
+                </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button type="submit" class="btn btn-primary" data-loading-text="Отправляю...">Войти</button>
+                <span class="help-block error"></span>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document.forms['login-form']).on('submit', function() {
+        var form = $(this);
+
+        $('.error', form).html('');
+        $.ajax({
+            url: '/login',
+            method: 'POST',
+            data: form.serialize(),
+            complete: function() {
+                $(':submit', form).button("reset");
+            },
+            statusCode: {
+                200: function() {
+                    form.html("You logged in").addClass('alert-success');
+                    window.location.href = '/chat';
+                },
+                403: function(jqXHR) {
+                    var error = JSON.parse(jqXHR.responseText);
+                    $('.error', form).html(error.message);
+                }
+            }
+        });
+        return false;
+    });
+</script>

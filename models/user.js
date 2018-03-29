@@ -26,6 +26,10 @@ schema.methods.encryptPassword = function(password){
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 }
 
+schema.methods.checkPassword = function(password) {
+    return this.encryptPassword(password) === thi.hashedPassword;
+};
+
 schema.virtual('password')
     .set(function(password){
         this._plainPassword = password;
